@@ -1,0 +1,31 @@
+% Book-wide macros (new names only; nothing from lindrew.sty is redefined)
+\newcommand{\T}{^{\mathsf T}}                 % transpose
+\newcommand{\colsp}[1]{\mc{C}\paren{#1}}      % column space
+\newcommand{\nullsp}[1]{\mc{N}\paren{#1}}     % null space
+\newcommand{\rowsp}[1]{\mc{R}\paren{#1}}      % row space
+\newcommand{\PX}{P_X}                          % orthogonal projection onto C(X)
+\newcommand{\one}{\mathbf 1}                   % vector of ones
+\newcommand{\ginv}[1]{#1^{-}}                  % generalized inverse
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\SSE}{\mathrm{SSE}}
+\newcommand{\RSS}{\mathrm{RSS}}
+\newcommand{\TSS}{\mathrm{TSS}}
+\newcommand{\SSW}{\mathrm{SSW}}
+\newcommand{\SSB}{\mathrm{SSB}}
+\newcommand{\RSE}{\mathrm{RSE}}
+\newcommand{\N}{\mathcal N}                    % normal distribution
+\newcommand{\nb}[1]{\texttt{notebooks/#1}}     % pointer to a notebook
+% Lecture header: {number}{youtube id}{source actually used}
+\newcommand{\lectureheader}[3]{%
+  \noindent\begin{tabular}{@{}lp{0.78\linewidth}@{}}
+  \textbf{Lecture:} & #1\\
+  \textbf{Video:} & \href{https://youtu.be/#2}{\texttt{\detokenize{https://youtu.be/#2}}}\\
+  \textbf{Timestamps:} & not available (video transcript not accessed)\\
+  \textbf{Source used:} & #3
+  \end{tabular}\par\medskip}
+\newcommand{\abs}[1]{\left|#1\right|}
+% A displayed line of code that may wrap at spaces
+\newcommand{\codeline}[1]{\par\smallskip\noindent\hspace*{1.5em}%
+  \parbox{\dimexpr\linewidth-3em\relax}{\raggedright\ttfamily\small #1}\par\smallskip}
+% Allow a little more stretch to avoid overfull lines with inline code
+\emergencystretch=2.5em

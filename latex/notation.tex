@@ -1,0 +1,46 @@
+\chapter*{Notation}
+\addcontentsline{toc}{chapter}{Notation}
+
+The same notation is used throughout the book. Where the instructor's own
+notation differs, the last column says how to translate.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}p{3.4cm}p{7.2cm}p{4.6cm}@{}}
+\hline
+\textbf{Symbol} & \textbf{Meaning} & \textbf{Instructor's notes}\\\hline
+$Y = X\beta + \eps$ & the linear model; $Y\in\RR^n$ observed, $\beta\in\RR^p$ unknown & same, with $m$ parameters\\
+$n$ & number of observations & same\\
+$p$ & number of parameters (columns of $X$) & written $m$\\
+$X$ & $n\times p$ known design matrix, $X=(x_{ij})$ & same\\
+$r=\rank(X)$ & rank of the design matrix & --\\
+$\eps$ & error vector, $\EE(\eps)=0$, $\Cov(\eps)=\sigma^2 I_n$ & same\\
+$(Y,X\beta,\sigma^2 I_n)$ & shorthand for the linear model above & same\\
+$\lambda\T\beta$ & a linear parametric function, $\lambda\in\RR^p$ & written $p\T\beta$, $p\in\RR^m$\\
+$\ell\T Y$ & a linear estimator, $\ell\in\RR^n$ & same\\
+$\colsp{A}$, $\nullsp{A}$, $\rowsp{A}$ & column space, null space, row space of $A$ & $\mc{C}(A)$, $\mc N(A)$, $\mc R(A)$\\
+$\PX$ & orthogonal projection of $\RR^n$ onto $\colsp{X}$ & same\\
+$\ginv{A}$ & a generalized inverse of $A$: $A\ginv{A}A=A$ & --\\
+$\hat\beta$ & any solution of the normal equations $X\T X\beta = X\T Y$ & $\hat\beta$ or $\tilde\beta$\\
+$\hat Y = X\hat\beta=\PX Y$ & fitted values & same\\
+$\hat e = Y-\hat Y$ & residual vector & same\\
+$\RSS=\SSE=\pnorm{Y-\hat Y}^2$ & residual (error) sum of squares & $R_0^2$\\
+$\TSS$ & total sum of squares $\sum(Y_i-\bar Y)^2$ & same\\
+$\SSW$, $\SSB$ & within- and between-group sums of squares & same\\
+$\bar Y_{i\cdot}$, $\bar Y_{\cdot\cdot}$ & group mean and grand mean & same\\
+$\one_n$ & the vector of $n$ ones & --\\
+$\RR,\EE,\PP$ & reals, expectation, probability & --\\
+$\Var,\Cov,\tr$ & variance, covariance, trace & --\\
+$\N(\mu,\sigma^2)$ & normal distribution & Normal$(\mu,\sigma^2)$\\
+$\chi^2_k$, $t_k$, $F_{k_1,k_2}$ & chi-square, Student-$t$ and $F$ distributions & same\\
+$\indep$ & independence & --\\\hline
+\end{tabular}
+\end{center}
+
+\paragraph{How to read these notes.}
+Unmarked text follows the instructor's published material for the relevant week.
+Boxes whose title begins with \emph{Supplementary} contain material added by the
+compiler: extra proofs, intuition or examples that are not in that material. Each lecture
+header states exactly which source was used. The video transcripts were
+\emph{not} accessed. Because of that, video timestamps are not given, and the
+order of topics follows the published notes.

@@ -1,0 +1,109 @@
+% ============================================================
+% Week 4 -- Normal equations
+% ============================================================
+\chapter{Least Squares and the Normal Equations}\label{ch:week04}
+
+This chapter covers Week~4 (Lectures 11--14). The instructor's handwritten notes for this week
+are divided into ``Lecture 2'', ``Lecture 3'' and ``Lecture 4''. We match them to the videos by
+title: the normal equations (video 12), the uniqueness theorem (video 13), and the projection
+and matrix review (video 14). The first part of the notes, which recalls the models and
+classifications, goes with video 11.
+
+\input{chapters/week04/lec11_classifications}
+\input{chapters/week04/lec12_normal_equations}
+\input{chapters/week04/lec13_theorem_lse}
+\input{chapters/week04/lec14_fundamentals_matrices}
+
+\section*{Solutions to the Exercises of Chapter~\ref{ch:week04}}
+\addcontentsline{toc}{section}{Solutions to the exercises}
+
+\paragraph{\Cref{prob:L11-1}.}
+With columns $(\mu,\alpha_1,\alpha_2,\beta_1,\beta_2,\beta_3)$ and cells ordered $(1,1)$, $(1,2)$, $(1,3)$, $(2,1)$, $(2,2)$, $(2,3)$:
+\[
+X=\begin{pmatrix}1&1&0&1&0&0\\1&1&0&0&1&0\\1&1&0&0&0&1\\1&0&1&1&0&0\\1&0&1&0&1&0\\1&0&1&0&0&1\end{pmatrix}.
+\]
+Column $\mu$ equals $\alpha_1+\alpha_2$ and also $\beta_1+\beta_2+\beta_3$, and by \cref{prop:L11-tworank} there is no
+other relation. So $\rank X=6-2=4=I+J-1$.
+
+\paragraph{\Cref{prob:L11-2}.}
+The $\gamma_{22}$ column is zero. The non-zero cell indicators $g_{11},g_{12},g_{21}$ are independent, and all other
+columns are sums of them ($\alpha_1=g_{11}+g_{12}$, $\alpha_2=g_{21}$, $\beta_1=g_{11}+g_{21}$, $\beta_2=g_{12}$). So
+$\rank X=3$, the number of non-empty cells.
+
+\paragraph{\Cref{prob:L11-3}.}
+The row of $X$ for any observation in subgroup $(i,j)$ is $\lambda=e_\mu+e_{\mu_i}+e_{\delta_{ij}}$, so
+$\mu+\mu_i+\delta_{ij}=\EE[Y_{ijl}]$ is estimable. Linear unbiased estimates include $Y_{ij1}$ and, better,
+$\bar Y_{ij\cdot}=\frac1{n_{ij}}\sum_lY_{ijl}$.
+
+\paragraph{\Cref{prob:L11-4}.}
+The rows for cells $(1,j)$ and $(2,j)$ are $e_\mu+e_{\alpha_1}+e_{\beta_j}$ and $e_\mu+e_{\alpha_2}+e_{\beta_j}$. Their difference
+is $e_{\alpha_1}-e_{\alpha_2}\in\colsp{X\T}$, so $\alpha_1-\alpha_2$ is estimable, for instance by $Y_{1j1}-Y_{2j1}$.
+
+\paragraph{\Cref{prob:L12-1}.}
+$X\T X=\begin{pmatrix}n&\sum x_i\\\sum x_i&\sum x_i^2\end{pmatrix}$ and $X\T Y=\begin{pmatrix}\sum Y_i\\\sum x_iY_i\end{pmatrix}$.
+The first equation, $n\beta_1+\beta_2\sum x_i=\sum Y_i$, gives $\beta_1=\bar Y-\beta_2\bar x$. Substituting into
+the second: $\beta_2(\sum x_i^2-n\bar x^2)=\sum x_iY_i-n\bar x\bar Y$, i.e.\ $\beta_2S_{xx}=S_{xY}$, which is
+\cref{thm:L05-slr}.
+
+\paragraph{\Cref{prob:L12-2}.}
+$(X\T Y)_\mu=\sum_{i,j}Y_{ij}$ and $(X\T Y)_{\mu_i}=\sum_jY_{ij}=n_i\bar Y_{i\cdot}$. $(X\T X\beta)_{\mu_i}=n_i(\mu+\mu_i)$, and
+$(X\T X\beta)_\mu=\sum_in_i(\mu+\mu_i)$. The $\mu_i$-equations say $\mu+\mu_i=\bar Y_{i\cdot}$. The $\mu$-equation is their
+weighted sum, so it adds nothing. Then $X\hat\beta$ has entry $\bar Y_{i\cdot}$ in every row of group $i$, and
+$R_0^2=\sum_{i,j}(Y_{ij}-\bar Y_{i\cdot})^2=\SSW$.
+
+\paragraph{\Cref{prob:L12-3}.}
+If $\one=Xc$, then $\one\T\hat e=c\T X\T\hat e=0$ by the normal equations.
+
+\paragraph{\Cref{prob:L12-4}.}
+$X\T XG=\begin{pmatrix}0&1&1\\0&1&0\\0&0&1\end{pmatrix}$, and multiplying by $X\T X$ gives back
+$\begin{pmatrix}4&2&2\\2&2&0\\2&0&2\end{pmatrix}$. So $G$ is a generalized inverse. $GX\T Y=(0,\,8/2,\,18/2)\T=(0,4,9)\T$, which is
+the solution with $t=0$.
+
+\paragraph{\Cref{prob:L13-1}.}
+By \cref{prob:L12-2} every solution has $\hat\mu+\hat\mu_i=\bar Y_{i\cdot}$. Hence
+$\sum c_i\hat\mu_i=\sum c_i(\bar Y_{i\cdot}-\hat\mu)=\sum c_i\bar Y_{i\cdot}-\hat\mu\sum c_i=\sum c_i\bar Y_{i\cdot}$.
+
+\paragraph{\Cref{prob:L13-2}.}
+Write $\lambda=X\T Xb$. Then $\lambda\T\hat\beta=b\T X\T Y$ and
+$\Var(\lambda\T\hat\beta)=\sigma^2b\T X\T Xb$ (\cref{prop:L09-rules}). For any generalized inverse $G$,
+$\lambda\T G\lambda=b\T X\T X\,G\,X\T Xb=b\T X\T Xb$. So $\Var(\lambda\T\hat\beta)=\sigma^2\lambda\T G\lambda$, whatever $G$ is.
+
+\paragraph{\Cref{prob:L13-3}.}
+$X=[\one,x,2x]$ has $\colsp{X}=\colsp{[\one,x]}$, so the fitted values are those of \cref{ex:L12-slr}. The normal equations
+reduce to $\beta_1=0.5$ and $\beta_2+2\beta_3=1.4$. All solutions are $(0.5,\ 1.4-2s,\ s)\T$, $s\in\RR$. The
+estimate of the estimable function $\beta_2+2\beta_3$ is $1.4$ for every $s$.
+
+\paragraph{\Cref{prob:L13-4}.}
+Take $X=[x,x,x]$ with $x=(1,2)\T$. Then $\nullsp{X}=\{v:v_1+v_2+v_3=0\}$ is two-dimensional. For
+$\lambda=(1,0,0)\T$ (not estimable, since $\lambda\T(1,-1,0)\T\ne0$), the two solutions $\hat\beta$ and $\hat\beta+(0,1,-1)\T$ give
+the same $\lambda\T\hat\beta$. This does not contradict the theorem, which requires equality for \emph{all} solutions, i.e.\
+$\lambda\perp$ \emph{every} $v\in\nullsp{X}$.
+
+\paragraph{\Cref{prob:L14-1}.}
+$I-\PX$ is symmetric, and $(I-\PX)^2=I-2\PX+\PX^2=I-\PX$. For $y$, $(I-\PX)y=y-\PX y\perp\colsp{X}$. Also
+$y-(I-\PX)y=\PX y\in\colsp{X}$, which is orthogonal to $\colsp{X}^\perp$. By uniqueness in \cref{lem:L14-projection},
+$I-\PX$ projects onto $\colsp{X}^\perp$. This space equals $\nullsp{X\T}$, because $X\T z=0$ iff $z$ is orthogonal to every
+column. Finally $\PX(I-\PX)=\PX-\PX^2=0$.
+
+\paragraph{\Cref{prob:L14-2}.}
+$(X\T X)^{-1}=\frac1{20}\begin{pmatrix}30&-10\\-10&4\end{pmatrix}$, so $(\PX)_{ij}=\frac1{20}(30-10(x_i+x_j)+4x_ix_j)$:
+\[
+\PX=\begin{pmatrix}0.7&0.4&0.1&-0.2\\0.4&0.3&0.2&0.1\\0.1&0.2&0.3&0.4\\-0.2&0.1&0.4&0.7\end{pmatrix},
+\qquad \PX(2,3,5,6)\T=(1.9,3.3,4.7,6.1)\T .
+\]
+The trace is $0.7+0.3+0.3+0.7=2=\rank X$.
+
+\paragraph{\Cref{prob:L14-3}.}
+The normalised group indicators $u_i=\one_{(i)}/\sqrt{n_i}$ form an orthonormal basis of $\colsp{X}$, where $\one_{(i)}$ is the
+indicator of group $i$. They are orthogonal because their supports are disjoint. Hence
+$\PX=\sum_i\frac1{n_i}\one_{(i)}\one_{(i)}\T$, which is block diagonal with blocks $\frac1{n_i}\one\one\T$. Then
+$(\PX Y)_{ij}=\frac1{n_i}\sum_lY_{il}=\bar Y_{i\cdot}$.
+
+\paragraph{\Cref{prob:L14-4}.}
+$\rank B=2$, so $\colsp{B}=\RR^2$ and $\nullsp{B\T}=\{0\}$. $\rowsp{B}=\mathrm{span}\{(1,0,1)\T,(0,1,1)\T\}$ and
+$\nullsp{B}=\mathrm{span}\{(1,1,-1)\T\}$, which is orthogonal to both rows. Rank--nullity: $2+1=3$.
+
+\paragraph{\Cref{prob:L14-5}.}
+For $y\in\RR^n$, $Py\in\colsp{P}$. For any $v=Pz\in\colsp{P}$,
+$\langle y-Py,Pz\rangle=z\T P\T(y-Py)=z\T(Py-P^2y)=0$. So $y-Py\perp\colsp{P}$, and $Py$ is the orthogonal projection
+(\cref{def:L14-proj}).

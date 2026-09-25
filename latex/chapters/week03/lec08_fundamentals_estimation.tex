@@ -1,0 +1,295 @@
+% ============================================================
+% Lecture 8 -- Fundamentals of Linear Models and the estimation problem
+% ============================================================
+\section{Fundamentals of Linear Models and the Estimation Problem}\label{sec:L08}
+
+\lectureheader{8}{9RbRhz776-k}{Week-3 handwritten notes \texttt{Feb9.pdf}, first part (``Model 1'', within/between variation, design matrix, identifiability)}
+
+\begin{guiding*}
+By the end of this lecture you should be able to:
+\begin{itemize}
+  \item write down the one-way classification model $Y_{ij}=\mu+\mu_i+\eps_{ij}$ and state the three estimation questions for it;
+  \item define $\SSW$, $\SSB$ and $\TSS$, prove $\TSS=\SSW+\SSB$, and state and prove their distributions and independence;
+  \item write the model as $Y=X\beta+\eps$, find $\rank(X)$, and explain why its parameters are \emph{not identifiable};
+  \item show that contrasts such as $\mu_1-\mu_2$ are identifiable, and that a constraint like $\sum\mu_i=0$ makes all parameters identifiable.
+\end{itemize}
+\end{guiding*}
+
+\subsection{Motivation}
+Week~2 fitted lines to data. From now on we develop the \emph{theory}: when can parameters be
+estimated, what is the best estimate, and how are its errors distributed? The instructor begins
+with the model that underlies the analysis of variance.
+
+\subsection{The one-way classification model}
+\begin{definition}[Model 1: one-way classification]\label{def:L08-oneway}
+There are $k$ populations (groups). From population $i$ we observe $n_i$ values $Y_{i1},\dots,Y_{in_i}$:
+\[
+Y_{ij}=\mu+\mu_i+\eps_{ij},\qquad 1\le i\le k,\quad 1\le j\le n_i,
+\]
+where $\mu,\mu_1,\dots,\mu_k\in\RR$ are unknown and the errors $\eps_{ij}\sim\N(0,\sigma^2)$ are
+independent. The total sample size is $n=n_1+n_2+\dots+n_k$. Here $\mu$ is a general
+level and $\mu_i$ the \vocab{effect} of group $i$. The mean of population $i$ is $\mu+\mu_i$.
+\end{definition}
+The data can be pictured as $k$ columns:
+\begin{center}
+\begin{tabular}{cccc}\hline
+Population 1 & Population 2 & $\cdots$ & Population $k$\\\hline
+$Y_{11}$ & $Y_{21}$ & & $Y_{k1}$\\
+$\vdots$ & $\vdots$ & & $\vdots$\\
+$Y_{1n_1}$ & $Y_{2n_2}$ & & $Y_{kn_k}$\\\hline
+\end{tabular}
+\end{center}
+
+\begin{question}\label{q:L08-questions}
+The lecture poses three questions.
+\begin{enumerate}
+  \item[(i)] Can we estimate $\mu$? If yes, what is the estimate?
+  \item[(ii)] Can we estimate $\mu+\mu_i$? If yes, what is the estimate?
+  \item[(iii)] Can we estimate $\mu_i-\mu_j$ for $1\le i\ne j\le k$? If yes, what is the estimate?
+\end{enumerate}
+\end{question}
+The answers are (i) no, (ii) yes, (iii) yes. This lecture shows why (i) fails and gives
+unbiased estimates for (iii). \Cref{sec:L10,sec:L13} give the general theory.
+
+\subsection{Within-group and between-group variation}
+Write $\bar Y_{i\cdot}=\frac1{n_i}\sum_{j=1}^{n_i}Y_{ij}$ for the mean of group $i$ and
+$\bar Y_{\cdot\cdot}=\frac1n\sum_{i=1}^k\sum_{j=1}^{n_i}Y_{ij}$ for the grand mean.
+
+\begin{definition}[Sums of squares]\label{def:L08-SS}
+\begin{itemize}
+  \item The variance of group $i$ is estimated unbiasedly by the $i$th sample variance
+  $S_i^2=\frac{1}{n_i-1}\sum_{j=1}^{n_i}(Y_{ij}-\bar Y_{i\cdot})^2$ (for $n_i\ge 2$).
+  \item The \vocab{sum of squares within} groups is $\SSW=\sum_{i=1}^k\sum_{j=1}^{n_i}(Y_{ij}-\bar Y_{i\cdot})^2$.
+  \item The \vocab{sum of squares between} groups is $\SSB=\sum_{i=1}^k n_i(\bar Y_{i\cdot}-\bar Y_{\cdot\cdot})^2$.
+  \item The \vocab{total sum of squares} is $\TSS=\sum_{i=1}^k\sum_{j=1}^{n_i}(Y_{ij}-\bar Y_{\cdot\cdot})^2$.
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[Decomposition of the total sum of squares]\label{thm:L08-decomp}
+$\TSS=\SSW+\SSB$.
+\end{theorem}
+\begin{proof}
+Write $Y_{ij}-\bar Y_{\cdot\cdot}=(Y_{ij}-\bar Y_{i\cdot})+(\bar Y_{i\cdot}-\bar Y_{\cdot\cdot})$ and square:
+\[
+\TSS=\sum_{i,j}(Y_{ij}-\bar Y_{i\cdot})^2+\sum_{i,j}(\bar Y_{i\cdot}-\bar Y_{\cdot\cdot})^2
++2\sum_{i=1}^k(\bar Y_{i\cdot}-\bar Y_{\cdot\cdot})\sum_{j=1}^{n_i}(Y_{ij}-\bar Y_{i\cdot}).
+\]
+The inner sum in the cross term is $\sum_j Y_{ij}-n_i\bar Y_{i\cdot}=0$ for every $i$, so the
+cross term vanishes. The first sum is $\SSW$. In the second the summand does not depend on
+$j$, so it equals $\sum_i n_i(\bar Y_{i\cdot}-\bar Y_{\cdot\cdot})^2=\SSB$.
+\end{proof}
+
+The notes then list distributional facts, the first two posed as exercises. To prove them we
+need two tools about normal vectors.
+
+\begin{lemma}[Quadratic forms in projections]\label{lem:L08-chisq}
+Let $Z\sim\N(0,I_m)$ (i.e.\ $Z_1,\dots,Z_m$ i.i.d.\ $\N(0,1)$) and let $A$ be an $m\times m$
+symmetric matrix with $A^2=A$ and $\rank(A)=r$. Then $Z\T AZ\sim\chi^2_r$.
+\end{lemma}
+\begin{proof}
+By the spectral theorem, $A=Q\Lambda Q\T$ with $Q$ orthogonal and $\Lambda$ diagonal. From
+$A^2=A$ we get $\Lambda^2=\Lambda$, so every eigenvalue is $0$ or $1$. The number of $1$'s is
+$\rank(\Lambda)=\rank(A)=r$. Order them first. Put $W=Q\T Z$. $W$ is a linear function of a
+normal vector, so it is normal, with mean $0$ and covariance $Q\T I Q=I$. Hence
+$W_1,\dots,W_m$ are i.i.d.\ $\N(0,1)$, and
+$Z\T AZ=W\T\Lambda W=W_1^2+\dots+W_r^2\sim\chi^2_r$.
+\end{proof}
+
+\begin{lemma}[Uncorrelated jointly normal vectors are independent]\label{lem:L08-indep}
+If $(U,V)$ is jointly normal and $\Cov(U,V)=0$ (every component of $U$ is uncorrelated with
+every component of $V$), then $U$ and $V$ are independent. Hence so are $g(U)$ and $h(V)$ for any
+functions $g,h$.
+\end{lemma}
+\begin{proof}
+Let $m_U,m_V$ be the means and $\Sigma_U,\Sigma_V$ the covariance matrices. The joint covariance
+matrix is block diagonal, $\mathrm{diag}(\Sigma_U,\Sigma_V)$. The moment generating function of a
+normal vector $W$ with mean $m$ and covariance $\Sigma$ is $\EE e^{t\T W}=\exp(t\T m+\tfrac12 t\T\Sigma t)$.
+For $t=(s,u)$ the block structure gives
+\[
+\EE e^{s\T U+u\T V}=\exp\bigl(s\T m_U+\tfrac12 s\T\Sigma_Us\bigr)\exp\bigl(u\T m_V+\tfrac12 u\T\Sigma_Vu\bigr)
+=\EE e^{s\T U}\,\EE e^{u\T V}.
+\]
+A joint moment generating function that factorises determines a product distribution, so $U\indep V$.
+\end{proof}
+
+\begin{theorem}[Distribution of the sums of squares]\label{thm:L08-dist}
+In Model~1:
+\begin{enumerate}
+  \item $\SSW/\sigma^2\sim\chi^2_{n-k}$: $\SSW$ has $n-k$ \vocab{degrees of freedom};
+  \item $\SSW$ is independent of $\SSB$;
+  \item if $\mu_1=\mu_2=\dots=\mu_k$, then $\SSB/\sigma^2\sim\chi^2_{k-1}$ ($k-1$ degrees of freedom) and $\TSS/\sigma^2\sim\chi^2_{n-1}$ ($n-1$ degrees of freedom).
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(1) Fix $i$ and let $\eps_i=(\eps_{i1},\dots,\eps_{in_i})\T$. Since $Y_{ij}-\bar Y_{i\cdot}=\eps_{ij}-\bar\eps_{i\cdot}$,
+\[
+\sum_{j}(Y_{ij}-\bar Y_{i\cdot})^2=\eps_i\T\Bigl(I_{n_i}-\tfrac1{n_i}\one\one\T\Bigr)\eps_i .
+\]
+The matrix $C_i=I-\frac1{n_i}\one\one\T$ is symmetric and idempotent: $C_i^2=I-\frac2{n_i}\one\one\T+\frac1{n_i^2}\one(\one\T\one)\one\T=C_i$.
+Its rank equals its trace, $n_i-1$. The trace equals the rank for idempotent matrices, because
+the eigenvalues are $0$ or $1$. Applying \cref{lem:L08-chisq} to $Z=\eps_i/\sigma$ gives
+$\sum_j(Y_{ij}-\bar Y_{i\cdot})^2/\sigma^2\sim\chi^2_{n_i-1}$. The $k$ groups are independent. A sum
+of independent $\chi^2$ variables is $\chi^2$ with the degrees of freedom added: multiply the
+moment generating functions $(1-2t)^{-(n_i-1)/2}$. So $\SSW/\sigma^2\sim\chi^2_{\sum(n_i-1)}=\chi^2_{n-k}$.
+
+(2) $\SSW$ is a function of the vector $U=(\eps_{ij}-\bar\eps_{i\cdot})_{i,j}$. $\SSB$ is a function of
+$V=(\bar Y_{1\cdot},\dots,\bar Y_{k\cdot})$, because $\bar Y_{\cdot\cdot}=\frac1n\sum n_i\bar Y_{i\cdot}$. Both are linear
+functions of the normal vector $\eps$, so $(U,V)$ is jointly normal. For $i'\ne i$,
+$\Cov(\bar Y_{i'\cdot},\eps_{ij}-\bar\eps_{i\cdot})=0$ because different groups are independent. For $i'=i$,
+\[
+\Cov(\bar\eps_{i\cdot},\eps_{ij}-\bar\eps_{i\cdot})=\Cov(\bar\eps_{i\cdot},\eps_{ij})-\Var(\bar\eps_{i\cdot})=\frac{\sigma^2}{n_i}-\frac{\sigma^2}{n_i}=0 .
+\]
+By \cref{lem:L08-indep}, $U\indep V$, hence $\SSW\indep\SSB$.
+
+(3) Suppose all $\mu_i$ equal a common value, so every group has mean $\vartheta=\mu+\mu_1$. Then
+$\bar Y_{i\cdot}\sim\N(\vartheta,\sigma^2/n_i)$ independently. Put $Z_i=\sqrt{n_i}(\bar Y_{i\cdot}-\vartheta)/\sigma$, so
+$Z=(Z_1,\dots,Z_k)\T\sim\N(0,I_k)$. Let $u=(\sqrt{n_1},\dots,\sqrt{n_k})\T/\sqrt n$, a unit vector. By
+\cref{prop:L01-bestconst} (with weights $n_i$, same proof),
+$\sum_i n_i(\bar Y_{i\cdot}-\vartheta)^2=\SSB+n(\bar Y_{\cdot\cdot}-\vartheta)^2$. Dividing by $\sigma^2$:
+\[
+\|Z\|^2=\frac{\SSB}{\sigma^2}+(u\T Z)^2,\qquad\text{since } \sqrt n(\bar Y_{\cdot\cdot}-\vartheta)/\sigma=\sum_i\tfrac{\sqrt{n_i}}{\sqrt n}Z_i=u\T Z .
+\]
+So $\SSB/\sigma^2=Z\T(I_k-uu\T)Z$. The matrix $I_k-uu\T$ is symmetric and idempotent with trace
+$k-1$, and \cref{lem:L08-chisq} gives $\chi^2_{k-1}$. Finally $\TSS=\SSW+\SSB$ is a sum of
+independent $\chi^2_{n-k}$ and $\chi^2_{k-1}$ variables (times $\sigma^2$), hence $\TSS/\sigma^2\sim\chi^2_{n-1}$.
+\end{proof}
+
+\begin{note}
+Degrees of freedom: $n-k$ for $\SSW$, $k-1$ for $\SSB$, $n-1$ for $\TSS$, and $(n-k)+(k-1)=n-1$.
+Parts of the handwritten notes are hard to read at this point. The degrees of freedom stated
+here are the standard ones, and they are the ones the proof gives.
+\end{note}
+
+\begin{example}[Sums of squares by hand]\label{ex:L08-SS}
+Three groups: group 1 $=\{5,7\}$, group 2 $=\{8,10,12\}$, group 3 $=\{4,6\}$. So $k=3$, $n=7$.
+\begin{itemize}
+  \item Group means $\bar Y_{1\cdot}=6$, $\bar Y_{2\cdot}=10$, $\bar Y_{3\cdot}=5$. Grand mean $\bar Y_{\cdot\cdot}=52/7=7.4286$.
+  \item $\SSW=[(5-6)^2+(7-6)^2]+[(8-10)^2+0+(12-10)^2]+[(4-5)^2+(6-5)^2]=2+8+2=12$.
+  \item $\bar Y_{i\cdot}-\bar Y_{\cdot\cdot}=-10/7,\ 18/7,\ -17/7$, so
+  $\SSB=\frac{2\cdot100+3\cdot324+2\cdot289}{49}=\frac{1750}{49}=\frac{250}{7}=35.714$.
+  \item $\TSS=\SSW+\SSB=12+250/7=334/7=47.714$. Directly: $\sum Y_{ij}^2-n\bar Y_{\cdot\cdot}^2=434-2704/7=334/7$. \checkmark
+  \item Degrees of freedom $n-k=4$ and $k-1=2$. The ratio $\frac{\SSB/2}{\SSW/4}=\frac{125/7}{3}=\frac{125}{21}=5.952$ is the $F$ statistic of Week~8. Under equal means it has the $F_{2,4}$ distribution. Here the p-value is $0.063$.
+\end{itemize}
+\end{example}
+
+\subsection{The model in matrix form}
+Stack the data group by group:
+$Y=(Y_{11},\dots,Y_{1n_1},\,Y_{21},\dots,Y_{2n_2},\,\dots,\,Y_{k1},\dots,Y_{kn_k})\T\in\RR^n$,
+and similarly $\eps$. The parameter vector is $\beta=(\mu,\mu_1,\dots,\mu_k)\T\in\RR^{k+1}$ and
+the \vocab{design matrix} is the $n\times(k+1)$ matrix
+\[
+X=\begin{pmatrix}
+\one_{n_1} & \one_{n_1} & 0 & \cdots & 0\\
+\one_{n_2} & 0 & \one_{n_2} & \cdots & 0\\
+\vdots & & & \ddots & \\
+\one_{n_k} & 0 & 0 & \cdots & \one_{n_k}
+\end{pmatrix}.
+\]
+Then $Y_{ij}=\mu+\mu_i+\eps_{ij}$ for all $i,j$ is the same as $Y=X\beta+\eps$, and $\EE[Y]=X\beta$.
+
+\begin{proposition}\label{prop:L08-rank}
+If every $n_i\ge 1$, then $\rank(X)=k$, while $X$ has $k+1$ columns.
+\end{proposition}
+\begin{proof}
+Let $c_0$ be the first column and $c_1,\dots,c_k$ the indicator columns of the groups. Every row
+has exactly one $1$ among $c_1,\dots,c_k$, so $c_0=c_1+\dots+c_k$ and $\rank(X)=\rank[c_1,\dots,c_k]$.
+The columns $c_1,\dots,c_k$ are non-zero ($n_i\ge1$) and have disjoint supports. If
+$\sum a_ic_i=0$, then looking at a row of group $i$ gives $a_i=0$. So they are linearly
+independent, and $\rank(X)=k$.
+\end{proof}
+
+\subsection{Identifiability}
+How many parameters are there? $k+1$ (plus $\sigma^2$). Can we estimate all of them? The notes'
+answer: \emph{no!} Fix any $c\in\RR$ and set
+\[
+\tilde\mu=\mu+c,\qquad \tilde\mu_i=\mu_i-c\quad(1\le i\le k).
+\]
+Then $\tilde\mu+\tilde\mu_i+\eps_{ij}=\mu+\mu_i+\eps_{ij}=Y_{ij}$. The two parameter vectors give
+\emph{the same} distribution of the data: ``the models are the same!'' No procedure based on the
+data can tell $\mu$ from $\mu+c$.
+
+\begin{definition}[Identifiability]\label{def:L08-ident}
+A parameter, or a function $\psi(\beta)$ of the parameters, is \vocab{identifiable} if different
+values of it always produce different distributions of the data. In the linear model with
+$\EE[Y]=X\beta$, this means: $X\beta_1=X\beta_2\Rightarrow\psi(\beta_1)=\psi(\beta_2)$.
+\end{definition}
+
+\begin{example}[What is identifiable in Model 1]\label{ex:L08-ident}
+\begin{itemize}
+  \item $\mu$ is not identifiable: $\beta_1=(\mu,\mu_1,\dots)$ and $\beta_2=(\mu+c,\mu_1-c,\dots)$ have $X\beta_1=X\beta_2$.
+  \item $\mu+\mu_i$ is identifiable. It is the mean of group $i$, which is an entry of $X\beta$.
+  \item $\mu_1-\mu_2$ is identifiable. It equals $(\mu+\mu_1)-(\mu+\mu_2)$, a difference of entries of $X\beta$. Moreover $Y_{11}-Y_{21}$ is an \emph{unbiased} estimate: $\EE[Y_{11}-Y_{21}]=(\mu+\mu_1)-(\mu+\mu_2)=\mu_1-\mu_2$.
+\end{itemize}
+The notes ask: is $Y_{11}-Y_{21}$ \emph{optimal}? What is an optimal estimate? This is answered in
+Week~5--6 (BLUEs, the Gauss--Markov theorem). The next note gives a first comparison.
+\end{example}
+
+\begin{note}[Supplementary: a better unbiased estimate of $\mu_1-\mu_2$]
+$\bar Y_{1\cdot}-\bar Y_{2\cdot}$ is also unbiased for $\mu_1-\mu_2$, and
+$\Var(\bar Y_{1\cdot}-\bar Y_{2\cdot})=\sigma^2(1/n_1+1/n_2)\le 2\sigma^2=\Var(Y_{11}-Y_{21})$.
+The inequality is strict as soon as $n_1$ or $n_2$ exceeds $1$. Using all the data in each group
+beats using one observation. The Gauss--Markov theorem shows that $\bar Y_{1\cdot}-\bar Y_{2\cdot}$ is
+in fact the best linear unbiased estimate.
+\end{note}
+
+The second way out is a \emph{constraint}. Suppose we assume $\sum_{i=1}^k\mu_i=0$. Then all
+parameters become identifiable (``Yay!'' in the notes).
+
+\begin{proposition}\label{prop:L08-constraint}
+Under the constraint $\sum_{i=1}^k\mu_i=0$, the map $\beta\mapsto X\beta$ is one-to-one on
+$\{\beta:\sum\mu_i=0\}$. Explicitly, if $m_i=\mu+\mu_i$ are the group means, then
+$\mu=\frac1k\sum_i m_i$ and $\mu_i=m_i-\frac1k\sum_{l}m_l$.
+\end{proposition}
+\begin{proof}
+$X\beta$ determines the group means $m_i=\mu+\mu_i$. Summing, $\sum_i m_i=k\mu+\sum\mu_i=k\mu$, so
+$\mu=\frac1k\sum m_i$, and then $\mu_i=m_i-\mu$. Thus $\beta$ is a function of $X\beta$, and any two
+constrained $\beta$ with the same $X\beta$ are equal.
+\end{proof}
+
+\begin{note}
+In either approach, only $k$ parameters (or combinations of parameters) are identifiable:
+the $k$ group means $\mu+\mu_i$ and everything computable from them. The notes ask
+\emph{why $k$?} Because $\rank(X)=k$ (\cref{prop:L08-rank}). $X\beta$ ranges over a
+$k$-dimensional space, so the data can pin down at most $k$ independent linear combinations of
+$\beta$. \Cref{sec:L10} makes this precise.
+\end{note}
+
+\subsection{Computation}
+The notebook \nb{week03/L08\_oneway\_sums\_of\_squares.ipynb}:
+\begin{itemize}
+  \item recomputes \cref{ex:L08-SS} and checks it against \texttt{statsmodels}' \texttt{anova\_lm};
+  \item builds $X$ for Model~1 and checks $\rank(X)=k$;
+  \item shows non-identifiability numerically ($X\beta_1=X\beta_2$ for $\beta_2=\beta_1+c(1,-1,\dots,-1)$);
+  \item simulates Model~1 many times and compares the histograms of $\SSW/\sigma^2$ and $\SSB/\sigma^2$ with the $\chi^2_{n-k}$ and $\chi^2_{k-1}$ densities, and checks that their correlation is near $0$.
+\end{itemize}
+
+\subsection{Summary}
+\begin{itemize}
+  \item Model 1: $Y_{ij}=\mu+\mu_i+\eps_{ij}$, $\eps_{ij}$ i.i.d.\ $\N(0,\sigma^2)$, $n=\sum n_i$.
+  \item $\TSS=\SSW+\SSB$, with degrees of freedom $n-1=(n-k)+(k-1)$.
+  \item $\SSW/\sigma^2\sim\chi^2_{n-k}$ and $\SSW\indep\SSB$. Under equal means, $\SSB/\sigma^2\sim\chi^2_{k-1}$.
+  \item $Y=X\beta+\eps$ with $\beta\in\RR^{k+1}$ and $\rank(X)=k$. The parameters are not identifiable ($\mu\to\mu+c$, $\mu_i\to\mu_i-c$).
+  \item Group means $\mu+\mu_i$ and contrasts $\mu_i-\mu_j$ are identifiable. The constraint $\sum\mu_i=0$ makes everything identifiable.
+\end{itemize}
+
+\subsection{Exercises}
+\begin{problem}\label{prob:L08-1}
+Show that $S_i^2$ is an unbiased estimate of $\sigma^2$, and that $\SSW/(n-k)$ is unbiased for $\sigma^2$ (without assuming normality).
+\end{problem}
+\begin{problem}\label{prob:L08-2}
+For the groups $\{1,3\}$ and $\{2,4,6\}$ compute $\SSW$, $\SSB$ and $\TSS$ and check \cref{thm:L08-decomp}.
+\end{problem}
+\begin{problem}\label{prob:L08-3}
+Show that in Model 1 (normality not needed) $\EE[\SSB]=(k-1)\sigma^2+\sum_i n_i(\mu_i-\bar\mu_w)^2$, where $\bar\mu_w=\frac1n\sum_i n_i\mu_i$.
+\end{problem}
+\begin{problem}\label{prob:L08-4}
+Prove that the trace of a symmetric idempotent matrix equals its rank.
+\end{problem}
+\begin{problem}\label{prob:L08-5}
+Under the constraint $\sum_i n_i\mu_i=0$ (instead of $\sum_i\mu_i=0$), express $\mu$ and $\mu_i$ in terms of the group means.
+\end{problem}
+
+\subsection{Further reading}
+Christensen, \S1.2--1.3 (multivariate normal, distribution of quadratic forms), \S2.1
+(identifiability and estimability) and Chapter~4 (one-way ANOVA). Rao, \S3b (quadratic forms
+in normal variables) and \S4a.

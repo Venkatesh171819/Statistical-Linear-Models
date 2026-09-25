@@ -1,0 +1,85 @@
+% ============================================================
+% Week 1 -- Review of basic statistics and working with R
+% ============================================================
+\chapter{Basic Statistics, R and Data Visualisation}\label{ch:week01}
+
+This chapter covers Week~1 of the course (Lectures 1--3). The instructor's schedule starts
+with the computing environment and exploratory graphics. The linear model itself appears in
+Week~2. Note that the official syllabus lists ``Review of estimation, hypothesis testing''
+for Week~1, but the published Week-1 material covers R and descriptive statistics. Estimation and
+testing are reviewed when they are needed (\cref{sec:L08,sec:L16}).
+
+\input{chapters/week01/lec01_basic_stats_intro_R}
+\input{chapters/week01/lec02_ggplot2}
+\input{chapters/week01/lec03_ggplot_geoms}
+
+\section*{Solutions to the Exercises of Chapter~\ref{ch:week01}}
+\addcontentsline{toc}{section}{Solutions to the exercises}
+
+\paragraph{\Cref{prob:L01-1}.}
+$n=7$ and $\sum x_i=42$, so $\bar x=6$. The median is $x_{(4)}=5$ and the mode is $4$.
+$\sum x_i^2=312$, so $\sum(x_i-\bar x)^2=312-7\cdot 36=60$ and $s^2=60/6=10$.
+Quartiles (position $1+6q$): $Q_1$ is at position $2.5$, i.e.\ $(4+4)/2=4$; $Q_3$ is at position
+$5.5$, i.e.\ $(7+9)/2=8$. So $\mathrm{IQR}=4$.
+
+\paragraph{\Cref{prob:L01-2}.}
+$\sum(x_i-\bar x)^2=\sum x_i^2-2\bar x\sum x_i+n\bar x^2=\sum x_i^2-2n\bar x^2+n\bar x^2=\sum x_i^2-n\bar x^2$.
+
+\paragraph{\Cref{prob:L01-3}.}
+$\bar y=\frac1n\sum(a+bx_i)=a+b\bar x$. Then $y_i-\bar y=b(x_i-\bar x)$, so $s_y^2=b^2s_x^2$ and
+$s_y=\abs{b}s_x$. The map $x\mapsto a+bx$ is monotone. For $b>0$ it keeps the order, so every
+quantile transforms as $q_y=a+bq_x$. For $b<0$ it reverses the order, so $Q_1^{(y)}=a+bQ_3^{(x)}$ and
+$Q_3^{(y)}=a+bQ_1^{(x)}$. The positions $1+(n-1)q$ and $1+(n-1)(1-q)$ are symmetric, so this holds
+exactly for R's type-7 rule. In both cases $\mathrm{IQR}_y=\abs{b}\,\mathrm{IQR}_x$.
+The shift $a$ affects only the centre.
+
+\paragraph{\Cref{prob:L01-4}.}
+\texttt{aq.groupby("Month").Temp.mean()} gives $65.55$ (May), $79.10$ (June), $83.90$ (July),
+$83.97$ (August) and $76.90$ (September). August is marginally the hottest month.
+
+\paragraph{\Cref{prob:L01-5}.}
+Take eight $0$'s and two $10$'s. Then $\bar x=2$, $\sigma_n^2=(8\cdot 4+2\cdot 64)/10=16$ and
+$\sigma_n=4$. The two $10$'s are at distance $8=2\sigma_n$, so only $80\%$ of the data lie strictly
+within $2\sigma_n$. The proportion at distance $\ge 2\sigma_n$ is $0.2\le 1/2^2=0.25$, as
+Chebyshev requires.
+
+\paragraph{\Cref{prob:L02-1}.}
+Inside \texttt{aes()}, \texttt{"blue"} is treated as a (constant) variable. ggplot maps its one
+level to the first default colour and adds a legend entry ``blue''. To colour every point blue,
+set the colour outside \texttt{aes()}:
+\texttt{geom\_point(aes(displ, hwy), colour = "blue")}.
+
+\paragraph{\Cref{prob:L02-2}.}
+A continuous variable gets a \emph{continuous} scale. The legend is a colour bar (a gradient),
+not a list of discrete keys. In seaborn, \texttt{hue="cty"} with a numeric column likewise uses a
+sequential palette and shows a few representative values.
+
+\paragraph{\Cref{prob:L02-3}.}
+The cross-tabulation of \texttt{drv} against \texttt{cyl} has zeros in three cells: four-wheel
+drive with $5$ cylinders, and rear-wheel drive with $4$ or $5$ cylinders. All $5$-cylinder cars
+are front-wheel drive, and all rear-wheel-drive cars have $6$ or $8$ cylinders.
+
+\paragraph{\Cref{prob:L02-4}.}
+\texttt{class} has $7$ levels, \texttt{drv} has $3$ and \texttt{cyl} has $4$ ($4,5,6,8$). The grid
+therefore has $3\times 4=12$ panels, three of them empty (\cref{prob:L02-3}).
+
+\paragraph{\Cref{prob:L03-1}.}
+\texttt{geom\_histogram} uses \texttt{stat\_bin}. It divides the range of the continuous $x$
+variable into intervals (bins) and counts the observations in each bin. \texttt{stat\_count} counts
+observations at each \emph{distinct value} of a discrete variable. \texttt{stat\_bin} is its
+analogue for continuous data, where the ``values'' are the bins.
+
+\paragraph{\Cref{prob:L03-2}.}
+For \texttt{cty} (min/median/max): 2seater $15/15/16$, compact $15/20/33$, midsize $15/18/23$,
+minivan $11/16/18$, pickup $9/13/17$, subcompact $14/19/35$, suv $9/13/20$. The largest range is
+for subcompacts: $35-14=21$.
+
+\paragraph{\Cref{prob:L03-3}.}
+\texttt{method="lm"} fits a single global linear model $y=a+bx$ by least squares. That is, it
+minimises $\sum_i (y_i-a-bx_i)^2$ over $(a,b)$ (\cref{sec:L05}). The result is necessarily a
+straight line. The default LOESS fits a separate weighted least-squares polynomial near each
+$x_0$, so the curve can bend.
+
+\paragraph{\Cref{prob:L03-4}.}
+\texttt{sns.countplot(data=mpg, x="class", hue="drv")}. From the cross-tabulation, only
+\texttt{subcompact} contains all three drive types ($4$: 4 cars, f: 22, r: 9).

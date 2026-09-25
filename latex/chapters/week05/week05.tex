@@ -1,0 +1,106 @@
+% ============================================================
+% Week 5 -- Estimation, inference and assessment in simple linear regression
+% ============================================================
+\chapter{Inference for Linear Models and Computation in R}\label{ch:week05}
+
+This chapter covers Week~5 (Lectures 15--18). \textbf{Source caveat.} The instructor's Week-5 lecture notes
+(\texttt{Feb21.pdf}) were \emph{not} accessed. The chapter is built from the Week-5 R code (\texttt{Feb21.r}), the
+Week-5 assignment (\texttt{hw56.pdf}), and the standard theory that the code and assignment use. The theory is written
+in the notation of the earlier chapters. Every numerical value shown was reproduced in the companion notebooks.
+
+\input{chapters/week05/lec15_estimating_coefficients}
+\input{chapters/week05/lec16_intervals_tests}
+\input{chapters/week05/lec17_rse_rsquare}
+\input{chapters/week05/lec18_computation_R}
+
+\section*{Solutions to the Exercises of Chapter~\ref{ch:week05}}
+\addcontentsline{toc}{section}{Solutions to the exercises}
+
+\paragraph{\Cref{prob:L15-1}.}
+Since $\sum_i(x_i-\bar x)=0$, $S_{xy}=\sum_i(x_i-\bar x)(Y_i-\bar Y)=\sum_i(x_i-\bar x)Y_i$. So
+$\hat\beta_1=S_{xy}/S_{xx}=\sum_ic_iY_i$. Then $\sum_ic_i=\sum_i(x_i-\bar x)/S_{xx}=0$, and
+$\sum_ic_ix_i=\sum_i(x_i-\bar x)x_i/S_{xx}=\sum_i(x_i-\bar x)^2/S_{xx}=1$, again because $\sum_i(x_i-\bar x)\bar x=0$.
+It follows that $\EE\hat\beta_1=\sum_ic_i(\beta_0+\beta_1x_i)=\beta_1$ and $\Var\hat\beta_1=\sigma^2\sum_ic_i^2=\sigma^2/S_{xx}$.
+
+\paragraph{\Cref{prob:L15-2}.}
+$X\T X=\begin{pmatrix}3&\sum x_i\\\sum x_i&\sum x_i^2\end{pmatrix}=\begin{pmatrix}3&0\\0&2\end{pmatrix}$, so
+$\Cov(\hat\beta)=\sigma^2(X\T X)^{-1}=\sigma^2\operatorname{diag}(1/3,\,1/2)$. By \cref{cor:L15-slr},
+$\Cov(\hat\beta_0,\hat\beta_1)=-\sigma^2\bar x/S_{xx}$, which is $0$ because the design is centred ($\bar x=0$). Then
+$\hat\beta_0=\bar Y$ and $\hat\beta_1$ is a contrast of the $Y_i$, orthogonal to $\one$.
+
+\paragraph{\Cref{prob:L15-3}.}
+Write $\hat\beta_0+\hat\beta_1x_0=\bar Y+\hat\beta_1(x_0-\bar x)$. Now
+$\Cov(\bar Y,\hat\beta_1)=\sum_i\frac1n c_i\sigma^2=0$ by \cref{prob:L15-1}. Hence
+$\Var=\frac{\sigma^2}n+(x_0-\bar x)^2\frac{\sigma^2}{S_{xx}}$. (Equivalently, $\sigma^2 x_0\T(X\T X)^{-1}x_0$ with $x_0=(1,x_0)\T$.)
+
+\paragraph{\Cref{prob:L15-4}.}
+$\Var\hat\beta_1=\sigma^2/S_{xx}$, so we maximise $S_{xx}$. For $x_i\in[0,1]$, $x_i^2\le x_i$, so
+$S_{xx}=\sum x_i^2-n\bar x^2\le n\bar x-n\bar x^2=n\bar x(1-\bar x)\le n/4$. Equality needs every $x_i\in\{0,1\}$ and
+$\bar x=1/2$: put five points at $0$ and five at $1$, giving $S_{xx}=2.5$. Ten equally spaced points give only $S_{xx}=1.019$.
+(This design is optimal only if the model is known to be linear. With two support points we cannot check linearity.)
+
+\paragraph{\Cref{prob:L16-1}.}
+For the Fort Collins data ($n=93$): $\hat\beta_1=0.2035$, $\widehat{\mathrm{SE}}=0.1310$, $t=1.553$ on $91$ degrees of freedom,
+$p=0.124>0.05$. We do not reject $H_0:\beta_1=0$. The $95\%$ CI is $0.2035\pm1.9864\times0.1310=(-0.0568,\,0.4638)$, which
+contains $0$. Early-season snowfall tells us little about late-season snowfall.
+
+\paragraph{\Cref{prob:L16-2}.}
+$\hat\beta_1=S_{xy}/S_{xx}=r\sqrt{S_{yy}/S_{xx}}$ and $\RSS=S_{yy}-S_{xy}^2/S_{xx}=S_{yy}(1-r^2)$. So
+$s^2=S_{yy}(1-r^2)/(n-2)$, and
+\[
+t=\frac{\hat\beta_1}{s/\sqrt{S_{xx}}}=\frac{r\sqrt{S_{yy}/S_{xx}}\sqrt{S_{xx}}\sqrt{n-2}}{\sqrt{S_{yy}(1-r^2)}}=\frac{r\sqrt{n-2}}{\sqrt{1-r^2}}.
+\]
+For the snowfall data this gives $1.5528$, the same as the regression $t$.
+
+\paragraph{\Cref{prob:L16-3}.}
+The $t$ pivot uses the fact that $(n-p)s^2/\sigma^2=\RSS/\sigma^2\sim\chi^2_{n-p}$, independent of $\hat\beta$. A $t_{n-p}$ variable is
+$Z/\sqrt{\chi^2_{n-p}/(n-p)}$, so the divisor must be $n-p$. With $\RSS/n$ the ratio is $\sqrt{n/(n-p)}\,T$, not $t_{n-p}$. It is
+also biased: $\EE[\RSS/n]=\frac{n-p}{n}\sigma^2<\sigma^2$ (\cref{thm:L16-s2}). Intervals built from it would be too short.
+
+\paragraph{\Cref{prob:L16-4}.}
+$t=(1.4-1)/0.14142=2.828<t_{2,0.975}=4.303$ (two-sided $p=0.106$). We do not reject $\beta_1=1$. This agrees with
+$1\in(0.7915,\,2.0085)$ from \cref{ex:L16-hand}.
+
+\paragraph{\Cref{prob:L16-5}.}
+With $\sigma^2=0.1$ and $10\,000$ replicates, the notebook finds coverage $0.9499$, within Monte Carlo error
+($\pm0.0044$) of $0.95$. The interval is exact for normal errors, whatever $\sigma^2$ and $n$ are.
+
+\paragraph{\Cref{prob:L17-1}.}
+Take $x=(1,2,3)$, $y=(3,2,1)$ and fit $y=\beta x$ through the origin. Then $\hat\beta=\sum x_iy_i/\sum x_i^2=10/14=5/7$, the
+residuals are $(16,4,-8)/7$, $\RSS=48/7\approx6.857$, and the centred $\TSS=2$. So $1-\RSS/\TSS=-17/7\approx-2.43$.
+Without an intercept, $\one\notin\colsp{X}$, the decomposition $\TSS=\mathrm{ESS}+\RSS$ fails, and a line through the
+origin can do worse than the constant $\bar y$.
+
+\paragraph{\Cref{prob:L17-2}.}
+With an intercept, $\one\in\colsp{X}$, so $\sum_ie_i=0$ and the mean of the $\hat Y_i$ is $\bar Y$. Since $e\perp\hat Y-\bar Y\one$,
+\[
+\sum_i(Y_i-\bar Y)(\hat Y_i-\bar Y)=\sum_i(\hat Y_i-\bar Y+e_i)(\hat Y_i-\bar Y)=\mathrm{ESS}.
+\]
+Hence $\operatorname{corr}(Y,\hat Y)^2=\mathrm{ESS}^2/(\TSS\cdot\mathrm{ESS})=\mathrm{ESS}/\TSS=R^2$ by \cref{thm:L17-decomp}.
+
+\paragraph{\Cref{prob:L17-3}.}
+$\hat\beta'=c\hat\beta$ and $e'=ce$, so $\RSS'=c^2\RSS$ and $\TSS'=c^2\TSS$. Thus $\RSE'=\abs c\,\RSE$ (RSE is in the units of $Y$),
+while $R^2$ is unchanged (it is unit-free).
+
+\paragraph{\Cref{prob:L17-4}.}
+The one-way model contains the intercept (as the sum of the group indicators), so $\RSS=\SSW=12=84/7$ and
+$\TSS=\SSW+\SSB=84/7+250/7=334/7$. Hence $R^2=\SSB/\TSS=250/334=125/167\approx0.7485$.
+
+\paragraph{\Cref{prob:L18-1}.}
+By \cref{prop:L18-intervals} the prediction half-width is $t_{n-2,1-\alpha/2}\,s\sqrt{1+h_0}$ with
+$h_0=\frac1n+\frac{(x_0-\bar x)^2}{S_{xx}}$. At $x_0=\bar x$, $h_0=1/n$. This is the narrowest prediction interval.
+
+\paragraph{\Cref{prob:L18-2}.}
+$h_i=\frac14+\frac{(x_i-2.5)^2}{5}$ gives $(0.7,0.3,0.3,0.7)$, the diagonal of $\PX$ in \cref{prob:L14-2}. The sum is
+$2=\tr\PX=\rank X$ (\cref{prop:L18-hat}).
+
+\paragraph{\Cref{prob:L18-3}.}
+The quadratic fit is $\widehat{\texttt{medv}}=42.862-2.3328\,\texttt{lstat}+0.04355\,\texttt{lstat}^2$, with all terms highly
+significant. $R^2$ rises from $0.5441$ to $0.6407$ and RSE falls from $6.216$ to $5.524$. The U-shape in the
+residual-versus-fitted plot largely disappears, which confirms the non-linearity seen in \cref{fig:L18-diag}.
+
+\paragraph{\Cref{prob:L18-4}.}
+$\hat\pi=4\hat p$, where $\hat p$ is the fraction of $m$ uniform points inside the quarter disc. So
+$\mathrm{SE}(\hat\pi)=4\sqrt{p(1-p)/m}$ with $p=\pi/4$. For $m=10^6$ this is $0.00164$ (the notebook's estimate is $3.14013$).
+The condition $\mathrm{SE}<0.001$ requires $m>16p(1-p)/10^{-6}\approx2.70\times10^6$. Each extra decimal digit costs a factor of $100$ in
+sample size.

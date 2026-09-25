@@ -1,0 +1,165 @@
+% ============================================================
+% Lecture 11 -- Different classifications of linear models
+% ============================================================
+\section{Different Classifications of Linear Models}\label{sec:L11}
+
+\lectureheader{11}{pNIF__GOLGo}{Week-4 handwritten notes \texttt{Feb14.pdf}, first part (``Recall: linear model'', examples 1--3, exercise ``express 1, 2, 3 as $(Y,X\beta,\sigma^2I)$''); Week-5 assignment Q3}
+
+\begin{guiding*}
+By the end of this lecture you should be able to:
+\begin{itemize}
+  \item recall the linear model $(Y,X\beta,\sigma^2I_n)$ and its ingredients;
+  \item write down explicitly the design matrices of the one-way, nested and two-way classification models;
+  \item compute the rank of these design matrices and say how many linear combinations of the parameters can be estimated.
+\end{itemize}
+\end{guiding*}
+
+\subsection{Recall: the linear model}
+The data are $n$ observations $Y_1,\dots,Y_n$, and the parameters are $\beta_1,\dots,\beta_p$ (the
+notes write $m$). The model is
+\[
+Y_i=\sum_{j=1}^p x_{ij}\beta_j+\eps_i,\qquad \EE[\eps_i]=0,\quad \Var(\eps_i)=\sigma^2,\quad \eps_i\text{ uncorrelated},
+\]
+or $Y=X\beta+\eps$ with $\EE[\eps]=0$ and $\Cov(\eps)=\sigma^2I_{n}$. We write it as
+$(Y,X\beta,\sigma^2I_n)$: the data, their expectation, and their variance--covariance matrix
+(\cref{def:L09-matrix}).
+
+The three examples of \cref{sec:L09} are recalled:
+\begin{enumerate}
+  \item one-way classification: $Y_{ij}=\mu+\mu_i+\eps_{ij}$, $1\le j\le n_i$, $1\le i\le k$;
+  \item nested classification: $Y_{ijl}=\mu+\mu_i+\delta_{ij}+\eps_{ijl}$, $1\le l\le n_{ij}$, $1\le j\le m_i$, $1\le i\le k$;
+  \item two-way classification: $Y_{ijl}=\mu+\alpha_i+\beta_j+\gamma_{ij}+\eps_{ijl}$, $1\le l\le n_{ij}$, $1\le j\le J$, $1\le i\le I$.
+\end{enumerate}
+The exercise in the notes (also Week-5 assignment Q3) is to express each of them as
+$(Y,X\beta,\sigma^2I_n)$. We do this in general and then for small cases.
+
+\subsection{A general principle}
+\begin{definition}[Indicator columns]\label{def:L11-indicator}
+For a classification with observations labelled by cells, the \vocab{indicator column} of a
+level (or cell) $c$ is the $0/1$ vector with a $1$ exactly in the rows of observations belonging
+to $c$. In all three models, $X$ is obtained by listing the observations in a fixed order (say
+lexicographic in $(i,j,l)$) and writing one column for each parameter: $\one_n$ for $\mu$, and the
+indicator column of the corresponding level or cell for every other parameter.
+\end{definition}
+Indeed, the coefficient of a parameter in the equation for $Y_{ijl}$ is $1$ if the parameter
+appears in that equation and $0$ otherwise.
+
+\subsection{Model 1: one-way classification}
+\begin{example}[$k=3$, $n_1=n_2=n_3=2$]\label{ex:L11-oneway}
+$Y=(Y_{11},Y_{12},Y_{21},Y_{22},Y_{31},Y_{32})\T$ and $\beta=(\mu,\mu_1,\mu_2,\mu_3)\T$:
+\[
+X=\begin{pmatrix}
+1&1&0&0\\1&1&0&0\\1&0&1&0\\1&0&1&0\\1&0&0&1\\1&0&0&1
+\end{pmatrix},\qquad n=6,\ p=4,\ \rank X=3 .
+\]
+\end{example}
+By \cref{prop:L08-rank}, $\rank X=k$ in general.
+
+\subsection{Model 2: nested classification}
+\begin{example}[$k=2$, $m_1=m_2=2$, $n_{ij}=2$]\label{ex:L11-nested}
+$\beta=(\mu,\mu_1,\mu_2,\delta_{11},\delta_{12},\delta_{21},\delta_{22})\T$ and
+$Y=(Y_{111},Y_{112},Y_{121},Y_{122},Y_{211},Y_{212},Y_{221},Y_{222})\T$:
+\[
+X=\begin{pmatrix}
+1&1&0&1&0&0&0\\
+1&1&0&1&0&0&0\\
+1&1&0&0&1&0&0\\
+1&1&0&0&1&0&0\\
+1&0&1&0&0&1&0\\
+1&0&1&0&0&1&0\\
+1&0&1&0&0&0&1\\
+1&0&1&0&0&0&1
+\end{pmatrix},\qquad n=8,\ p=7,\ \rank X=4 .
+\]
+\end{example}
+
+\begin{proposition}\label{prop:L11-nestedrank}
+In the nested model with every $n_{ij}\ge1$, $\rank X=\sum_{i=1}^k m_i$, the number of subgroups.
+\end{proposition}
+\begin{proof}
+Let $d_{ij}$ be the indicator column of subgroup $(i,j)$. These columns are non-zero and have
+disjoint supports, so, as in the proof of \cref{prop:L08-rank}, they are linearly independent.
+The remaining columns are sums of them: the column of $\mu_i$ is $\sum_{j=1}^{m_i}d_{ij}$ and the
+column of $\mu$ is $\sum_{i,j}d_{ij}$. Hence $\colsp{X}=\mathrm{span}\{d_{ij}\}$, which has dimension $\sum_i m_i$.
+\end{proof}
+
+\subsection{Model 3: two-way classification}
+\begin{example}[$I=J=2$, $n_{ij}=2$]\label{ex:L11-twoway}
+$\beta=(\mu,\alpha_1,\alpha_2,\beta_1,\beta_2,\gamma_{11},\gamma_{12},\gamma_{21},\gamma_{22})\T$ and $Y$
+ordered as $Y_{111},Y_{112},Y_{121},Y_{122},Y_{211},Y_{212},Y_{221},Y_{222}$:
+\[
+X=\begin{pmatrix}
+1&1&0&1&0&1&0&0&0\\
+1&1&0&1&0&1&0&0&0\\
+1&1&0&0&1&0&1&0&0\\
+1&1&0&0&1&0&1&0&0\\
+1&0&1&1&0&0&0&1&0\\
+1&0&1&1&0&0&0&1&0\\
+1&0&1&0&1&0&0&0&1\\
+1&0&1&0&1&0&0&0&1
+\end{pmatrix},\qquad n=8,\ p=9,\ \rank X=4 .
+\]
+\end{example}
+
+\begin{proposition}\label{prop:L11-tworank}
+In the two-way model with interaction and every $n_{ij}\ge1$, $\rank X=IJ$, the number of cells.
+In the \emph{additive} two-way model $Y_{ijl}=\mu+\alpha_i+\beta_j+\eps_{ijl}$ (no $\gamma_{ij}$), with every
+$n_{ij}\ge 1$, $\rank X=I+J-1$.
+\end{proposition}
+\begin{proof}
+With interaction: the $IJ$ cell indicators $g_{ij}$ (the columns of the $\gamma_{ij}$) are non-zero with disjoint
+supports, so they are independent. The other columns are sums of them: $\alpha_i\mapsto\sum_j g_{ij}$,
+$\beta_j\mapsto\sum_i g_{ij}$, $\mu\mapsto\sum_{i,j}g_{ij}$. So $\colsp{X}=\mathrm{span}\{g_{ij}\}$ has dimension $IJ$.
+
+Additive model: the columns are $\one$, $a_i=\sum_j g_{ij}$ and $b_j=\sum_i g_{ij}$. Since
+$\sum_i a_i=\sum_jb_j=\one$, the column space is spanned by $a_1,\dots,a_I,b_1,\dots,b_J$, and there is at least the one
+relation $\sum a_i-\sum b_j=0$. So the rank is at most $I+J-1$. To see that it is exactly $I+J-1$, suppose
+$\sum_i s_ia_i+\sum_j t_jb_j=0$. Every cell is non-empty, so reading the row of an observation in
+cell $(i,j)$ gives $s_i+t_j=0$ for all $i,j$. Hence $s_i=-t_1$ for all $i$ and $t_j=-s_1$ for all $j$, so
+all $s_i$ equal some $s$ and all $t_j=-s$. The relations form a $1$-dimensional space, so the
+$I+J$ columns $a_i,b_j$ span a space of dimension $I+J-1$.
+\end{proof}
+
+\begin{note}[How many parameters can we estimate?]
+The rank tells us how many linearly independent linear parametric functions are estimable
+(\cref{cor:L10-subspace}): $k$ of the $k+1$ in Model~1, $\sum m_i$ of the $1+k+\sum m_i$ in Model~2,
+and $IJ$ of the $1+I+J+IJ$ in Model~3. The estimable functions are exactly the combinations of
+cell means. In the next lectures we find \emph{how} to estimate them: by least squares.
+\end{note}
+
+\begin{note}[Supplementary: Kronecker-product form]
+With equal replication the design matrices have a compact form. In Model~1 with $n_i\equiv m$:
+$X=[\one_k\otimes\one_m,\ I_k\otimes\one_m]$. In Model~3 with $n_{ij}\equiv m$:
+$X=[\one_I\otimes\one_J\otimes\one_m,\ I_I\otimes\one_J\otimes\one_m,\ \one_I\otimes I_J\otimes\one_m,\ I_I\otimes I_J\otimes\one_m]$.
+The notebook builds the matrices of this lecture both ways.
+\end{note}
+
+\subsection{Computation}
+\nb{week04/L11\_classification\_designs.ipynb} writes a general function that builds the design
+matrix from factor labels, checks the ranks of \cref{prop:L11-nestedrank,prop:L11-tworank}, and
+compares with the full-rank codings that \texttt{statsmodels} formulas produce.
+
+\subsection{Summary}
+\begin{itemize}
+  \item Each parameter contributes one column: $\one$ for $\mu$, an indicator column for each level or cell effect.
+  \item Ranks: one-way $k$; nested $\sum m_i$; two-way with interaction $IJ$; additive two-way $I+J-1$ (all cells non-empty).
+  \item The rank is the number of linearly independent estimable functions.
+\end{itemize}
+
+\subsection{Exercises}
+\begin{problem}\label{prob:L11-1}
+Write the design matrix of the additive two-way model with $I=2$, $J=3$, $n_{ij}=1$, and verify that its rank is $4$.
+\end{problem}
+\begin{problem}\label{prob:L11-2}
+In the two-way model with interaction, $I=J=2$, suppose cell $(2,2)$ is empty. What is $\rank X$ now?
+\end{problem}
+\begin{problem}\label{prob:L11-3}
+In the nested model, show that $\mu+\mu_i+\delta_{ij}$ is estimable for each subgroup, and give a linear unbiased estimate.
+\end{problem}
+\begin{problem}\label{prob:L11-4}
+Show that in the additive two-way model $\alpha_1-\alpha_2$ is estimable when all cells are non-empty.
+\end{problem}
+
+\subsection{Further reading}
+Christensen, Chapter~4 (one-way ANOVA), Chapter~7 (multifactor ANOVA) and Chapter~8 (nested
+models); Rao, \S4d (analysis of variance, two-way and nested classifications).

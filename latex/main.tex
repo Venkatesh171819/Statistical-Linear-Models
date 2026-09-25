@@ -1,0 +1,45 @@
+% =====================================================================
+%  Linear Statistical Models -- Lecture Notes
+%  Based on the IIT Madras BS course by Prof. Siva Athreya
+% =====================================================================
+\documentclass[11pt]{report}
+
+% ---------------------------------------------------------------------
+% lindrew.sty contains  \newcommand{\the}{\vartheta}.  \the is a TeX
+% primitive, so that line raises "Command \the already defined" on every
+% engine.  We do NOT edit the style file.  Instead, while (and only while)
+% the package is loaded, the "not definable" error is turned into a
+% warning; the offending definition is skipped and \the keeps its
+% primitive meaning.  In the notes we write \vartheta directly.
+% Delete the four lines around \usepackage to see the original error.
+% ---------------------------------------------------------------------
+\makeatletter
+\let\LSM@savednotdefinable\@notdefinable
+\def\@notdefinable{\PackageWarningNoLine{lindrew}{Skipped a \string\newcommand\space
+  for an already-defined command (the \string\the\space line; see main.tex)}}
+\makeatother
+\usepackage[formal]{lindrew}
+\makeatletter
+\let\@notdefinable\LSM@savednotdefinable
+\makeatother
+
+\input{macros}
+
+\title{Linear Statistical Models\\[0.4em]
+  \large Lecture notes and Python companion\\
+  based on the IIT Madras BS Degree course by Prof.\ Siva Athreya}
+\author{Compiled lecture notes}
+\date{Part I: Weeks 1--5 (Lectures 1--18)}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\input{notation}
+
+\include{chapters/week01/week01}
+\include{chapters/week02/week02}
+\include{chapters/week03/week03}
+\include{chapters/week04/week04}
+\include{chapters/week05/week05}
+
+\end{document}

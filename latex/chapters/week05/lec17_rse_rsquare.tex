@@ -1,0 +1,123 @@
+% ============================================================
+% Lecture 17 -- Assess the linear model by RSE and R-square
+% ============================================================
+\section{Assessing the Linear Model: RSE and $R^2$}\label{sec:L17}
+
+\lectureheader{17}{g1UzPzHITGs}{Week-5 R code \texttt{Feb21.r} (``discuss what each summary is stating''). The Week-5 lecture PDF was \emph{not} accessed. Definitions follow ISLR \S3.1.3, which the code follows.}
+
+\begin{guiding*}
+By the end of this lecture you should be able to:
+\begin{itemize}
+  \item define the residual standard error (RSE) and $R^2$ and interpret them;
+  \item prove the decomposition $\TSS=\mathrm{ESS}+\RSS$ when the model contains an intercept;
+  \item prove that $R^2=r^2$ in simple linear regression;
+  \item read the bottom part of \texttt{summary(lm(...))}.
+\end{itemize}
+\end{guiding*}
+
+\subsection{Recap}
+\Cref{sec:L16} judged individual coefficients: is $\beta_j$ zero or not? Here we judge the fit of the model as a
+whole: how far are the data from the fitted line, and how much of the variation in $Y$ does the model explain?
+
+\subsection{Residual standard error}
+\begin{definition}[Residual standard error]\label{def:L17-rse}
+For a model with $\rank X=p$ fitted to $n$ observations,
+\[
+\RSE=\sqrt{\frac{\RSS}{n-p}}=s,\qquad \RSS=\sum_{i=1}^n(Y_i-\hat Y_i)^2 .
+\]
+In simple linear regression, $\RSE=\sqrt{\RSS/(n-2)}$.
+\end{definition}
+The RSE estimates $\sigma$, the standard deviation of the errors (\cref{thm:L16-s2}). It is roughly the
+typical size of the amount by which a response deviates from the true regression line, measured in the
+units of $Y$. It is an absolute measure of \emph{lack of fit}. Whether a given RSE is ``small'' depends on
+the scale of $Y$.
+
+\subsection{The coefficient of determination}
+\begin{definition}[$R^2$]\label{def:L17-r2}
+For a model containing an intercept ($\one_n\in\colsp{X}$), let $\TSS=\sum_i(Y_i-\bar Y)^2$ and
+$\mathrm{ESS}=\sum_i(\hat Y_i-\bar Y)^2$ (the explained sum of squares). Then
+\[
+R^2=1-\frac{\RSS}{\TSS}=\frac{\mathrm{ESS}}{\TSS}.
+\]
+\end{definition}
+The second equality is the following theorem.
+
+\begin{theorem}[Decomposition of TSS]\label{thm:L17-decomp}
+If $\one_n\in\colsp{X}$, then $\TSS=\mathrm{ESS}+\RSS$, and $0\le R^2\le 1$.
+\end{theorem}
+\begin{proof}
+Write $Y-\bar Y\one=(\hat Y-\bar Y\one)+(Y-\hat Y)$. The second vector $\hat e=Y-\hat Y=(I-\PX)Y$ is orthogonal to
+$\colsp{X}$. The first vector lies in $\colsp{X}$, since $\hat Y\in\colsp{X}$ and $\one\in\colsp{X}$. Hence the cross term
+vanishes and, by Pythagoras,
+$\pnorm{Y-\bar Y\one}^2=\pnorm{\hat Y-\bar Y\one}^2+\pnorm{\hat e}^2$, i.e.\ $\TSS=\mathrm{ESS}+\RSS$. Both parts are
+non-negative, so $0\le\RSS/\TSS\le1$.
+\end{proof}
+This is the same decomposition as $\TSS=\SSB+\SSW$ in the one-way model (\cref{thm:L08-decomp}). There
+$\hat Y_{ij}=\bar Y_{i\cdot}$, so $\mathrm{ESS}=\SSB$ and $\RSS=\SSW$.
+
+$R^2$ is the \emph{proportion of the variability in $Y$ explained by the model}. It is a relative measure, always
+between $0$ and $1$ and free of units. $R^2$ near $1$ means that the model explains most of the variation. $R^2$
+near $0$ means that it explains little: either the linear model is wrong or the errors are large.
+
+\begin{theorem}\label{thm:L17-r2r}
+In simple linear regression, $R^2=r^2$, where $r=S_{xY}/\sqrt{S_{xx}S_{YY}}$ is the sample correlation.
+\end{theorem}
+\begin{proof}
+By \cref{thm:L05-slr}, $\RSS=S_{YY}-S_{xY}^2/S_{xx}$ and $\TSS=S_{YY}$. So
+$R^2=1-\RSS/\TSS=\dfrac{S_{xY}^2}{S_{xx}S_{YY}}=r^2$.
+\end{proof}
+
+\begin{example}[The four-point data]\label{ex:L17-hand}
+$Y=(2,3,5,6)$, $\bar Y=4$, $\TSS=4+1+1+4=10$, and $\RSS=0.2$. So
+$R^2=1-0.2/10=0.98$. Also $r=7/\sqrt{5\times10}=0.98995$ and $r^2=0.98$. \checkmark\ Fitted values
+$(1.9,3.3,4.7,6.1)$ give $\mathrm{ESS}=2.1^2+0.7^2+0.7^2+2.1^2=9.8=\TSS-\RSS$. $\RSE=\sqrt{0.2/2}=0.3162$.
+\end{example}
+
+\begin{example}[Boston and iris]\label{ex:L17-boston}
+For \texttt{lm(medv \textasciitilde\ lstat, data = Boston)}:
+$\RSS=19472.38$, $\TSS=42716.30$, so $R^2=1-19472.38/42716.30=0.5441$, and
+$\RSE=\sqrt{19472.38/504}=6.216$. \texttt{summary} prints: ``Residual standard error: 6.216 on 504 degrees of freedom,
+Multiple R-squared: 0.5441, Adjusted R-squared: 0.5432, F-statistic: 601.6 on 1 and 504 DF''. So
+\texttt{lstat} explains about $54\%$ of the variation in median house values, and a typical prediction is off by about
+\$6200. Since $\bar{\texttt{medv}}=22.53$, that is a relative error of about $28\%$.
+For \texttt{iris} (\cref{ex:L15-iris}): $R^2=0.6690$ and $\RSE=0.4780$ on $148$ degrees of freedom.
+\end{example}
+
+\begin{note}[Supplementary: adjusted $R^2$ and the $F$ statistic]
+Adding columns to $X$ can never increase $\RSS$: minimising over a larger column space gives a smaller or equal
+minimum. So $R^2$ always increases when variables are added, even useless ones. The \emph{adjusted}
+$R^2_{\mathrm{adj}}=1-\frac{\RSS/(n-p)}{\TSS/(n-1)}$ penalises this. For Boston it is $1-\frac{19472.38/504}{42716.30/505}=0.5432$.
+The $F$ statistic $\frac{\mathrm{ESS}/(p-1)}{\RSS/(n-p)}=\frac{23243.91/1}{19472.38/504}=601.6$ tests whether all slopes are
+zero. With one predictor, $F=t^2=(-24.528)^2$. The $F$-test is the subject of Week~8.
+\end{note}
+
+\subsection{Computation}
+\texttt{fit.rsquared}, \texttt{fit.rsquared\_adj}, \texttt{np.sqrt(fit.scale)} (RSE), \texttt{fit.ssr} (RSS),
+\texttt{fit.centered\_tss} (TSS), \texttt{fit.ess}, \texttt{fit.fvalue}. See \nb{week05/L17\_rse\_rsquared.ipynb}, which
+computes everything from the definitions and checks it against \texttt{statsmodels}. It also illustrates that
+$R^2$ never decreases when a pure-noise variable is added, while $R^2_{\mathrm{adj}}$ can.
+
+\subsection{Summary}
+\begin{itemize}
+  \item $\RSE=\sqrt{\RSS/(n-p)}$ estimates $\sigma$. It is an absolute measure of lack of fit, in the units of $Y$.
+  \item With an intercept, $\TSS=\mathrm{ESS}+\RSS$ and $R^2=1-\RSS/\TSS\in[0,1]$ is the proportion of variance explained.
+  \item Simple linear regression: $R^2=r^2$. Boston: $R^2=0.544$, $\RSE=6.216$.
+\end{itemize}
+
+\subsection{Exercises}
+\begin{problem}\label{prob:L17-1}
+Show by example that without an intercept, $1-\RSS/\TSS$ can be negative.
+\end{problem}
+\begin{problem}\label{prob:L17-2}
+Show that $R^2$ equals the squared sample correlation between $Y_i$ and $\hat Y_i$ in any model with an intercept.
+\end{problem}
+\begin{problem}\label{prob:L17-3}
+If $Y$ is measured in different units ($Y'=cY$, $c\ne0$), how do $\RSE$ and $R^2$ change?
+\end{problem}
+\begin{problem}\label{prob:L17-4}
+Compute $R^2$ for the one-way example of \cref{ex:L08-SS} (groups $\{5,7\},\{8,10,12\},\{4,6\}$).
+\end{problem}
+
+\subsection{Further reading}
+ISLR \S3.1.3 (assessing the accuracy of the model); Christensen, \S6.4 and Chapter~14 (coefficient of
+determination); Weisberg, \emph{ALR}, \S2.7 and \S3.4.

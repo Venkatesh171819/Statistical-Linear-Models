@@ -1,0 +1,122 @@
+% ============================================================
+% Lecture 13 -- Theorem on least square estimates
+% ============================================================
+\section{A Theorem on Least Squares Estimates}\label{sec:L13}
+
+\lectureheader{13}{XLT3vSQphCg}{Week-4 handwritten notes \texttt{Feb14.pdf}, part ``Lecture 3'' (estimable $\iff$ least squares estimate unique)}
+
+\begin{guiding*}
+By the end of this lecture you should be able to:
+\begin{itemize}
+  \item state and prove: $\lambda\T\beta$ is estimable if and only if its least squares estimate $\lambda\T\hat\beta$ is the same for every solution $\hat\beta$ of the normal equations;
+  \item compute the least squares estimate of an estimable function in a rank-deficient model;
+  \item show that the least squares estimate of an estimable function is a \emph{linear unbiased} estimate.
+\end{itemize}
+\end{guiding*}
+
+\subsection{Recall}
+For the linear model $(Y,X\beta,\sigma^2I_n)$ and $\lambda\in\RR^p$, the linear parametric function
+$\lambda\T\beta$ is estimable if there is $\ell\in\RR^n$ with $\EE[\ell\T Y]=\lambda\T\beta$ for all $\beta$, i.e.\ if
+$\ell\T Y$ is an unbiased estimate of $\lambda\T\beta$. By \cref{thm:L10-estimable} this happens iff
+$\lambda\in\colsp{X\T}$. In \cref{sec:L12} we saw that the normal equations may have many solutions
+(\cref{ex:L12-oneway}). So the ``least squares estimate'' $\lambda\T\hat\beta$ might depend on which solution we
+pick. The theorem of this lecture says exactly when it does not.
+
+\subsection{The theorem}
+\begin{theorem}\label{thm:L13-unique}
+Let $(Y,X\beta,\sigma^2I_n)$ be a linear model and $\lambda\in\RR^p$. Then $\lambda\T\beta$ is estimable if and
+only if its least squares estimate is unique, i.e.\ $\lambda\T\hat\beta_1=\lambda\T\hat\beta_2$ for any two
+solutions $\hat\beta_1,\hat\beta_2$ of the normal equations $X\T X\beta=X\T Y$.
+\end{theorem}
+\begin{proof}
+($\Rightarrow$) Suppose $\lambda\T\beta$ is estimable. Then $\lambda\in\colsp{X\T}=\colsp{X\T X}$ (recall the earlier
+theorem, \cref{thm:L10-estimable}, and \cref{lem:L12-colspace}). So there exists $b\in\RR^p$ with
+$\lambda=X\T Xb$. Let $\hat\beta$ be any solution of the normal equations. Then
+\[
+\lambda\T\hat\beta=(X\T Xb)\T\hat\beta=b\T X\T X\hat\beta=b\T X\T Y ,
+\]
+which does not depend on the choice of $\hat\beta$. Hence the least squares estimate of $\lambda\T\beta$
+is unique.
+
+($\Leftarrow$) Suppose $\lambda\T\hat\beta$ is the same for all solutions $\hat\beta$. Take one solution $\hat\beta_1$ and any
+$v\in\nullsp{X\T X}$, i.e.\ $X\T Xv=0$. Then $\hat\beta_2=\hat\beta_1+v$ is also a solution:
+$X\T X\hat\beta_2=X\T X\hat\beta_1+0=X\T Y$. By assumption $\lambda\T\hat\beta_2=\lambda\T\hat\beta_1$, i.e.\ $\lambda\T v=0$. So $\lambda$ is
+orthogonal to $\nullsp{X\T X}$. For the symmetric matrix $A=X\T X$,
+\[
+\nullsp{A}^\perp=\colsp{A\T}=\colsp{A}
+\]
+(the proof of \cref{prop:L10-nullspace} applied to $A$). Hence
+$\lambda\in\colsp{X\T X}=\colsp{X\T}$ (\cref{lem:L12-colspace}), and $\lambda\T\beta$ is estimable by \cref{thm:L10-estimable}.
+\end{proof}
+
+\begin{note}
+The set of all solutions of the normal equations is $\hat\beta_1+\nullsp{X\T X}$, and
+$\nullsp{X\T X}=\nullsp{X}$ (\cref{thm:L14-colspace}). The theorem therefore says: $\lambda\T\hat\beta$ is constant on
+this affine set iff $\lambda\perp\nullsp{X}$. This is the condition of \cref{prop:L10-nullspace}, now seen
+from the side of the estimates rather than the side of the expectations.
+\end{note}
+
+\begin{proposition}[Least squares estimates of estimable functions are unbiased]\label{prop:L13-unbiased}
+If $\lambda\T\beta$ is estimable, with $\lambda=X\T\ell$, then its least squares estimate satisfies
+\[
+\lambda\T\hat\beta=\ell\T X\hat\beta=\ell\T\hat Y,
+\]
+which is a linear function of $Y$, and $\EE[\lambda\T\hat\beta]=\lambda\T\beta$.
+\end{proposition}
+\begin{proof}
+$\lambda\T\hat\beta=\ell\T X\hat\beta$ holds for every solution. By \cref{cor:L12-fitted}, $X\hat\beta=\hat Y$ is the same for
+all solutions. In the proof of \cref{thm:L13-unique} we wrote $\lambda\T\hat\beta=b\T X\T Y$, which is linear in $Y$.
+Then $\EE[b\T X\T Y]=b\T X\T X\beta=(X\T Xb)\T\beta=\lambda\T\beta$.
+\end{proof}
+Thus, for an estimable $\lambda\T\beta$, $\lambda\T\hat\beta$ is one of the linear unbiased estimates of \cref{sec:L10}.
+Week~6 (the Gauss--Markov theorem) shows that it is the \emph{best} one.
+
+\subsection{Examples}
+\begin{example}[Continuing \cref{ex:L12-oneway}]\label{ex:L13-oneway}
+The solutions are $\hat\beta(t)=(t,4-t,9-t)\T$, $t\in\RR$, and $\nullsp{X}=\mathrm{span}\{(1,-1,-1)\T\}$.
+\begin{itemize}
+  \item $\mu_1-\mu_2$, $\lambda=(0,1,-1)\T$: $\lambda\T\hat\beta(t)=(4-t)-(9-t)=-5$ for every $t$. It is unique, as the theorem predicts for an estimable function. The estimate is $\bar Y_{1\cdot}-\bar Y_{2\cdot}=4-9$.
+  \item $\mu+\mu_2$, $\lambda=(1,0,1)\T$: $t+9-t=9=\bar Y_{2\cdot}$ for every $t$.
+  \item $\mu_1$, $\lambda=(0,1,0)\T$: $\lambda\T\hat\beta(t)=4-t$ depends on $t$. It is not unique, so $\mu_1$ is not estimable.
+  \item $\mu$: $\hat\mu=t$ can be any real number. With the constraint $\mu_1+\mu_2=0$ of \cref{prop:L08-constraint}, we would pick $t$ with $(4-t)+(9-t)=0$, i.e.\ $t=6.5$, so $\hat\beta=(6.5,-2.5,2.5)\T$.
+\end{itemize}
+\end{example}
+
+\begin{example}[A regression design with a redundant column]\label{ex:L13-collinear}
+Let $Y_i=\beta_1+\beta_2x_i+\beta_3z_i+\eps_i$ with $z_i=2x_i$ for all $i$ (for example, the same length recorded in two
+units). Then $\nullsp{X}=\mathrm{span}\{(0,2,-1)\T\}$. The function $\beta_2+2\beta_3$ (the total effect of $x$) is
+estimable, since $(0,1,2)\cdot(0,2,-1)=0$. The separate slopes $\beta_2$ and $\beta_3$ are not. Software fitting
+this model must either drop a column or report a warning: \texttt{statsmodels} uses the
+Moore--Penrose solution and flags a singular design. The notebook shows this with the data of
+\cref{ex:L12-slr}.
+\end{example}
+
+\subsection{Computation}
+\nb{week04/L13\_uniqueness\_of\_lse.ipynb} generates many solutions $\hat\beta+v$, $v\in\nullsp{X}$, of the
+normal equations and plots $\lambda\T\hat\beta$ for estimable and non-estimable $\lambda$ (constant versus varying).
+It also verifies \cref{prop:L13-unbiased} by simulation.
+
+\subsection{Summary}
+\begin{itemize}
+  \item \textbf{Theorem:} $\lambda\T\beta$ is estimable $\iff$ $\lambda\T\hat\beta$ is the same for all solutions of $X\T X\beta=X\T Y$.
+  \item If $\lambda=X\T Xb$, then $\lambda\T\hat\beta=b\T X\T Y$. If $\lambda=X\T\ell$, then $\lambda\T\hat\beta=\ell\T\hat Y$. It is linear in $Y$ and unbiased.
+  \item Non-estimable functions (like $\mu$ or $\mu_i$ in the one-way model) have least squares ``estimates'' that depend on an arbitrary choice.
+\end{itemize}
+
+\subsection{Exercises}
+\begin{problem}\label{prob:L13-1}
+In the one-way model with general $k$, show that the least squares estimate of an estimable contrast $\sum_i c_i\mu_i$ ($\sum c_i=0$) is $\sum_i c_i\bar Y_{i\cdot}$.
+\end{problem}
+\begin{problem}\label{prob:L13-2}
+Show that $\Var(\lambda\T\hat\beta)=\sigma^2\,\lambda\T\ginv{(X\T X)}\lambda$ for estimable $\lambda\T\beta$ and any generalized inverse, and that the value does not depend on the choice of $\ginv{(X\T X)}$.
+\end{problem}
+\begin{problem}\label{prob:L13-3}
+In \cref{ex:L13-collinear}, find all solutions of the normal equations for $x=(1,2,3,4)$, $z=2x$, $Y=(2,3,5,6)\T$, and the least squares estimate of $\beta_2+2\beta_3$.
+\end{problem}
+\begin{problem}\label{prob:L13-4}
+Give an example where $\lambda\T\hat\beta$ is the same for two particular solutions but $\lambda\T\beta$ is not estimable. Why does this not contradict the theorem?
+\end{problem}
+
+\subsection{Further reading}
+Christensen, \S2.2 (Theorem 2.2.3 and the discussion of estimable functions and least squares).
+Rao, \S4a.2 (least squares estimators of estimable functions are unique).

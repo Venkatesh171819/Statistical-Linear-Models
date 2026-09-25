@@ -1,0 +1,103 @@
+% ============================================================
+% Week 2 -- Introduction to linear models (exploratory)
+% ============================================================
+\chapter{Linear Models: First Look}\label{ch:week02}
+
+This chapter covers Week~2 (Lectures 4--7). The instructor introduces linear models
+\emph{exploratorily}, with real and simulated data and R's \texttt{lm}. The formal theory of
+estimation starts in \cref{ch:week03}. Week~2 of the official syllabus is ``working with R''.
+Here the Python equivalents of every R command are given alongside.
+
+\input{chapters/week02/lec04_intro_linear_models}
+\input{chapters/week02/lec05_basics_linear_models}
+\input{chapters/week02/lec06_residuals}
+\input{chapters/week02/lec07_more_datasets}
+
+\section*{Solutions to the Exercises of Chapter~\ref{ch:week02}}
+\addcontentsline{toc}{section}{Solutions to the exercises}
+
+\paragraph{\Cref{prob:L04-1}.}
+Jitter only affects the picture, and each point moves by less than half an inch, so no visual
+conclusion changes. A line fitted to jittered data would change slightly, because it is a
+function of the data. The jitter $U_i\sim U(-0.5,0.5)$ has mean $0$, so the jittered mean
+$\bar x+\bar U$ equals the true mean in expectation. Its standard deviation is
+$\sqrt{1/12}/\sqrt n\approx 0.0078$ for $n=1375$.
+
+\paragraph{\Cref{prob:L04-2}.}
+With seed $2024$ (see the notebook), the training set has $825$ pairs and the test set $275$.
+The training fit is $\widehat{\text{Dheight}}=32.281+0.5052\,\text{Mheight}$, and the mean
+squared prediction error on the test set is $5.08$ square inches. The exact numbers depend on the
+seed.
+
+\paragraph{\Cref{prob:L04-3}.}
+Newton's laws of motion: very accurate for everyday speeds, but they fail when speeds approach
+the speed of light (relativity) or at atomic scales (quantum mechanics). Another example is
+Hooke's law $F=-kx$, which fails for large extensions of a spring.
+
+\paragraph{\Cref{prob:L04-4}.}
+All points would lie on the line $y=x$, with no scatter, so $a_1=0$ and $a_2=1$. The real data
+have slope $0.54$ and a large scatter, so heights are far from exactly inherited.
+
+\paragraph{\Cref{prob:L05-1}.}
+$\sum(x_i-\bar x)(y_i-\bar y)=\sum(x_i-\bar x)y_i-\bar y\sum(x_i-\bar x)=\sum(x_i-\bar x)y_i$,
+since $\sum(x_i-\bar x)=0$. Also $\sum(x_i-\bar x)y_i=\sum x_iy_i-\bar x\sum y_i=\sum x_iy_i-n\bar x\bar y$.
+
+\paragraph{\Cref{prob:L05-2}.}
+$\bar x=1$, $\bar y=2$, $S_{xx}=2$, $S_{xy}=(-1)(-1)+0\cdot(-1)+1\cdot 2=3$, $S_{yy}=6$.
+So $\hat a_2=1.5$ and $\hat a_1=2-1.5=0.5$. Fitted values $(0.5,2,3.5)$, residuals $(0.5,-1,0.5)$,
+and $\min f=0.25+1+0.25=1.5=S_{yy}-S_{xy}^2/S_{xx}=6-4.5$.
+
+\paragraph{\Cref{prob:L05-3}.}
+$g(a)=\sum(y_i-ax_i)^2=\sum y_i^2-2a\sum x_iy_i+a^2\sum x_i^2$. If $\sum x_i^2>0$, complete the square:
+$g(a)=\sum x_i^2\,(a-\sum x_iy_i/\sum x_i^2)^2+\text{const}$. The minimum is at $a=\sum x_iy_i/\sum x_i^2$.
+
+\paragraph{\Cref{prob:L05-4}.}
+If all $x_i=c$, then $f(a_1,a_2)=\sum(y_i-(a_1+a_2c))^2$ depends only on $t=a_1+a_2c$. It is
+minimised when $t=\bar y$ (\cref{prop:L01-bestconst}). The minimisers form the whole line
+$\{(a_1,a_2):a_1+a_2c=\bar y\}$, so there is no unique slope. The slope is \emph{not
+identifiable} from such data. This is a first example of the non-uniqueness studied in
+\cref{sec:L08,sec:L13}.
+
+\paragraph{\Cref{prob:L05-5}.}
+See the notebook. The least-absolute-deviations line is close to the least-squares line for
+\texttt{sim1}, because the data have no outliers. Nelder--Mead may return slightly different
+answers from different starting points, because the $L^1$ objective is flat in places.
+
+\paragraph{\Cref{prob:L06-1}.}
+$\hat y_i=\hat a_1+\hat a_2x_i$, so $\sum\hat y_i\hat e_i=\hat a_1\sum\hat e_i+\hat a_2\sum x_i\hat e_i=0$
+by \cref{cor:L05-props}. Since also $\sum\hat e_i=0$, the argument of \cref{prop:L06-noline}
+with $x_i$ replaced by $\hat y_i$ shows that the least-squares line through $(\hat y_i,\hat e_i)$
+is $y=0$.
+
+\paragraph{\Cref{prob:L06-2}.}
+In Python, \texttt{smf.ols("np.log(pres) \textasciitilde\ bp", fb.drop(11)).fit().params} gives
+$-0.951766$ and $0.020519$. Case $12$ is row $11$ in zero-based indexing.
+
+\paragraph{\Cref{prob:L06-3}.}
+$100\log_{10}p=c\ln p$ with $c=100/\ln 10$. If $(\hat a_1,\hat a_2)$ minimises
+$\sum(\ln p_i-a_1-a_2x_i)^2$, then $\sum(c\ln p_i-b_1-b_2x_i)^2=c^2\sum(\ln p_i-b_1/c-(b_2/c)x_i)^2$
+is minimised at $b_j=c\hat a_j$. Check: $0.020622\times 43.4294=0.8956$.
+
+\paragraph{\Cref{prob:L06-4}.}
+A ``fan'' or ``megaphone'' shape: residuals scattered narrowly around $0$ for small $x$ and
+widely for large $x$. This indicates non-constant variance (heteroscedasticity), which violates
+the assumption $\Var(\eps_i)=\sigma^2$ introduced in \cref{sec:L09}.
+
+\paragraph{\Cref{prob:L07-1}.}
+Age on Length gives $\widehat{\text{Age}}=-0.993+0.02693\,\text{Length}$. The slope $0.02693$ is
+smaller than $1/30.32=0.03298$, as \cref{prop:L07-asym} predicts: $30.32\times0.02693=r^2=0.816$.
+
+\paragraph{\Cref{prob:L07-2}.}
+$\hat a_2=S_{xy}/S_{xx}=\dfrac{S_{xy}}{\sqrt{S_{xx}S_{yy}}}\sqrt{\dfrac{S_{yy}}{S_{xx}}}
+=r\sqrt{\dfrac{S_{yy}/(n-1)}{S_{xx}/(n-1)}}=r\,s_y/s_x$.
+
+\paragraph{\Cref{prob:L07-3}.}
+$S_{yy}=17572.41$ and $\min f=17118.83$. The line removes $1-17118.83/17572.41=2.58\%$ of the
+total, which is exactly $R^2$.
+
+\paragraph{\Cref{prob:L07-4}.}
+The residual sum of squares is $358595.5$ for the line and $348491.7$ for the separate-means model.
+The separate-means model is smaller, and it must be. Every straight line $a_1+a_2\,\text{Age}$
+assigns one fitted value to each age, so it is a special case of ``one mean per age''. Minimising
+over the larger family can only give a smaller (or equal) minimum. The difference is the lack of
+fit of the straight line. Testing whether it is significant uses the $F$-tests of Week~8.
